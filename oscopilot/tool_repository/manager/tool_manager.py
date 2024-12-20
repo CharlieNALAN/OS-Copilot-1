@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 load_dotenv(dotenv_path='.env', override=True)
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 OPENAI_ORGANIZATION = os.getenv('OPENAI_ORGANIZATION')
-
+BASE_URL = os.getenv('OPENAI_BASE_URL')
 EMBED_MODEL_TYPE = os.getenv('MODEL_TYPE')
 EMBED_MODEL_NAME = os.getenv('MODEL_NAME')
 
@@ -63,11 +63,10 @@ class ToolManager:
         os.makedirs(f"{generated_tool_repo_dir}/tool_code", exist_ok=True)
         os.makedirs(f"{generated_tool_repo_dir}/tool_description", exist_ok=True)
         # Utilize the Chroma database and employ OpenAI Embeddings for vectorization (default: text-embedding-ada-002)
-        
         if EMBED_MODEL_TYPE == "OpenAI":
             embedding_function = OpenAIEmbeddings(
                 openai_api_key=OPENAI_API_KEY,
-                openai_organization=OPENAI_ORGANIZATION,
+                openai_organization=OPENAI_ORGANIZATION
             )
         elif EMBED_MODEL_TYPE == "OLLAMA":
             embedding_function = OllamaEmbeddings(model=EMBED_MODEL_NAME)

@@ -71,6 +71,7 @@ prompt = {
         def python_function():
             # function code
         ```
+        Beware of the <invoke> pair is enclosed the  whole function call, do not add it in the parameters.
         <invoke>python_function(arg1, arg2, ...)</invoke>
 
         The python function you write should follow the following criteria:
@@ -84,6 +85,7 @@ prompt = {
         8. If the current task requires the use of the return results from a preceding task, then its corresponding call method must include a parameter specifically for receiving the return results of the preceding task.
         9. If the current task depends on the results from a previous task, the function must include a parameter designed to accept the results from that previous task.
         10. If the code involves the output of file paths, ensure that the output includes the files' absolute path.
+        11. The input to this task may be based on the output of the previous subtask, so you'll have to decide the parameters based on the code of the previous subtask.
 
         And the function call should follow the following criteria:
         1. The Python function call must be syntactically correct as per Python standards.
@@ -101,6 +103,7 @@ prompt = {
         Task Description: {task_description}     
         Information of Prerequisite Tasks: {pre_tasks_info}   
         Relevant Code: {relevant_code}
+        Previous subtask code: {previous_subtask_code}
         Detailed description of user information:
         1. 'Working Directory' represents the working directory. It may not necessarily be the same as the current working directory. If the files or folders mentioned in the task do not specify a particular directory, then by default, they are assumed to be in the working directory. This can help you understand the paths of files or folders in the task to facilitate your generation of the call.
         2. 'Information of Prerequisite Tasks' provides relevant information about the prerequisite tasks for the current task, encapsulated in a dictionary format. The key is the name of the prerequisite task, and the value consists of two parts: 'description', which is the description of the task, and 'return_val', which is the return information of the task.

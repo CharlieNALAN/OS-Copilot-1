@@ -55,11 +55,11 @@ class FridayAgent(BaseAgent):
         self.reset_inner_monologue()
         sub_tasks_list = self.planning(task)
         print("The task list obtained after planning is: {}".format(sub_tasks_list))
-
+        execution_state = ExecutionState() # init
         while self.planner.sub_task_list:
             try:
                 sub_task = self.planner.sub_task_list.pop(0)
-                execution_state = self.executing(sub_task, task)
+                execution_state = self.executing(sub_task, task, execution_state)
                 isTaskCompleted, isReplan = self.self_refining(sub_task, execution_state)
                 if isReplan: continue
                 if isTaskCompleted:
@@ -90,7 +90,7 @@ class FridayAgent(BaseAgent):
         isTaskCompleted = False
         isReplan = False
         score = 0
-        state, node_type, description, code, result, relevant_code = execution_state.get_all_state()
+        state, node_type, description, code, result, relevant_code, _ = execution_state.get_all_state()
         if node_type in ['Python', 'Shell', 'AppleScript']:
             judgement = self.judging(tool_name, state, code, description)
             score = judgement.score
@@ -150,7 +150,7 @@ class FridayAgent(BaseAgent):
             return     
         return self.planner.sub_task_list
     
-    def executing(self, tool_name, original_task):
+    def executing(self, tool_name, original_task, execution_state:ExecutionState = None):
         """
         Executes a given sub-task as part of the task execution process, handling different types of tasks including code execution, API calls, and question-answering.
 
@@ -163,6 +163,7 @@ class FridayAgent(BaseAgent):
 
         The method dynamically adapts the execution strategy based on the type of sub-task, utilizing the executor component for code execution, API interaction, or question-answering as appropriate.
         """
+        pre_code = execution_state.code + "\n"+ execution_state.invoke
         tool_node = self.planner.tool_node[tool_name]
         description = tool_node.description
         logging.info("The current subtask is: {subtask}".format(subtask=description))
@@ -193,7 +194,7 @@ class FridayAgent(BaseAgent):
                     api_path = self.executor.extract_API_Path(description)
                     code = self.executor.api_tool(description, api_path, pre_tasks_info)
                 else:
-                    code, invoke = self.executor.generate_tool(tool_name, description, node_type, pre_tasks_info, relevant_code)
+                    code, invoke = self.executor.generate_tool(tool_name, description, node_type, pre_tasks_info, relevant_code, pre_code)
             except Exception as e:
                 print("api call failed:", str(e))
                 return
@@ -207,7 +208,7 @@ class FridayAgent(BaseAgent):
             }
             logging.info(f"The subtask result is: {json.dumps(output)}")
 
-        return ExecutionState(state, node_type, description, code, result, relevant_code)
+        return ExecutionState(state, node_type, description, code, result, relevant_code, invoke)
     
     def judging(self, tool_name, state, code, description):
         """

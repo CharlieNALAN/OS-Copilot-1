@@ -70,9 +70,10 @@ class ExecutionState:
     code: str = ''
     result: str = ''
     relevant_code: str = ''
+    invoke: str = ''
 
     def get_all_state(self):
-        return self.state, self.node_type, self.description, self.code, self.result, self.relevant_code
+        return self.state, self.node_type, self.description, self.code, self.result, self.relevant_code,self.invoke
     
 
 class TaskStatusCode(IntEnum):

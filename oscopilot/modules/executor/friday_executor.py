@@ -30,7 +30,7 @@ class FridayExecutor(BaseModule):
             self.open_api_doc = json.load(f) 
     
     @api_exception_mechanism(max_retries=3)
-    def generate_tool(self, task_name, task_description, tool_type, pre_tasks_info, relevant_code):
+    def generate_tool(self, task_name, task_description, tool_type, pre_tasks_info, relevant_code, pre_tasks_code = ""):
         """
         Generates executable code and invocation logic for a specified tool.
 
@@ -60,7 +60,8 @@ class FridayExecutor(BaseModule):
                 working_dir= self.environment.working_dir,
                 task_name=task_name,
                 pre_tasks_info=pre_tasks_info,
-                relevant_code=relevant_code
+                relevant_code=relevant_code,
+                previous_subtask_code = pre_tasks_code
             )
         else:
             sys_prompt = self.prompt['_SYSTEM_SHELL_APPLESCRIPT_GENERATE_PROMPT']

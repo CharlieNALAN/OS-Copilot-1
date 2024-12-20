@@ -12,6 +12,7 @@ MODEL_NAME = os.getenv('MODEL_NAME')
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 OPENAI_ORGANIZATION = os.getenv('OPENAI_ORGANIZATION')
 BASE_URL = os.getenv('OPENAI_BASE_URL')
+API_BASE_URL=os.getenv('API_BASE_URL')
 
 # add
 MODEL_SERVER = os.getenv('MODEL_SERVER')
@@ -138,7 +139,7 @@ def main():
     # message.append({"role": "user", "content": 'hello'})
     # print(OPENAI_API_KEY)
     # print(BASE_URL)
-    llm = OLLAMA()
+    llm = OpenAI()
     response = llm.chat(messages)
     print(response)
     end_time = time.time()

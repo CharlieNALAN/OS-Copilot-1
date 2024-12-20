@@ -5,7 +5,7 @@ from oscopilot.utils import setup_config, setup_pre_run
 
 args = setup_config()
 if not args.query:
-    args.query = "Copy any text file located in the working_dir/document directory that contains the word 'agent' to a new folder named 'agents' "
+    args.query = "Yor are good at database operation, now I give you lots of python tools about operating database. The mysql database connection of database has already done. Now I want to build a hotel database system, can you create some relavent tables for me, and add some data into them"
 task = setup_pre_run(args)
 agent = FridayAgent(FridayPlanner, FridayRetriever, FridayExecutor, ToolManager, config=args)
 agent.run(task=task)
